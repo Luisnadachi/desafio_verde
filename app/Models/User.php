@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -14,7 +14,6 @@ class User extends Authenticatable
     public $incrementing = false;
 
     protected $fillable = [
-        'wallet_id',
         'name',
         'cpf',
         'email',
@@ -25,9 +24,9 @@ class User extends Authenticatable
         'password',
     ];
 
-    public function wallet(): BelongsTo
+    public function wallet(): HasOne
     {
-        return $this->belongsTo(Wallet::class);
+        return $this->hasOne(Wallet::class);
     }
 
 }

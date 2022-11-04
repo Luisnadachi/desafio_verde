@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Shopkeeper extends Model
 {
@@ -13,7 +13,6 @@ class Shopkeeper extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'wallet_id',
         'name',
         'cnpj',
         'email',
@@ -24,8 +23,8 @@ class Shopkeeper extends Model
         'password',
     ];
 
-    public function wallet(): BelongsTo
+    public function wallet(): HasOne
     {
-        return $this->belongsTo(Wallet::class);
+        return $this->hasOne(Wallet::class);
     }
 }

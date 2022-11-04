@@ -19,7 +19,6 @@ class CreateShopkeepersTable extends Migration
             $table->string('cnpj')->unique();
             $table->string('email')->unique();
             $table->string('password');
-            $table->foreignUuid('wallet_id')->references('id')->on('wallets');
             $table->timestamps();
         });
     }

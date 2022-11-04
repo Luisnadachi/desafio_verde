@@ -19,7 +19,6 @@ class CreateUsersTable extends Migration
             $table->string('cpf')->unique();
             $table->string('email')->unique();
             $table->string('password');
-            $table->foreignUuid('wallet_id')->references('id')->on('wallets');
             $table->timestamps();
         });
     }

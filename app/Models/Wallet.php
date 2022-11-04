@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Wallet extends Model
 {
-
     use HasFactory;
     public $incrementing = false;
 
@@ -19,12 +18,12 @@ class Wallet extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'owner_id');
     }
 
     public function shopkeeper(): BelongsTo
     {
-        return $this->belongsTo(Shopkeeper::class);
+        return $this->belongsTo(Shopkeeper::class, 'owner_id');
     }
 
 }

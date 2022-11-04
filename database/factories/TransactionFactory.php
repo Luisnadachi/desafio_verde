@@ -13,8 +13,8 @@ class TransactionFactory extends Factory
     {
         return [
             'amount' => $this->faker->randomFloat(),
-            'payer_id' => User::factory(),
-            'payee_id' => Shopkeeper::factory(),
+            'payer_id' => Wallet::factory(),
+            'payee_id' => Wallet::factory(),
         ];
     }
 }
