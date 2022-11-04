@@ -18,7 +18,6 @@ class CreateTransactionsTable extends Migration
             $table->foreignUuid('payer_id')->references('id')->on('wallets');
             $table->foreignUuid('payee_id')->references('id')->on('wallets');
             $table->bigInteger('amount');
-            $table->dateTime('date_transaction');
             $table->timestamps();
         });
     }

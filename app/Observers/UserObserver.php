@@ -8,9 +8,9 @@ use Ramsey\Uuid\Uuid;
 class UserObserver
 {
 
-    public function creating(User $user): string
+    public function creating(User $user): void
     {
-        return $user->id = Uuid::uuid4();
+        $user->id = Uuid::uuid4()->toString();
     }
 
 }

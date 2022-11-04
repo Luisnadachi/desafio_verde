@@ -15,7 +15,6 @@ class CreateWalletsTable extends Migration
     {
         Schema::create('wallets', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('owner_id');
             $table->bigInteger('balance');
             $table->timestamps();
         });
