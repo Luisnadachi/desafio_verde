@@ -15,7 +15,7 @@ class Transaction extends Model
     protected $fillable = [
         'payer_id',
         'payee_id',
-        'value',
+        'amount',
     ];
 
     public function payer(): BelongsTo
