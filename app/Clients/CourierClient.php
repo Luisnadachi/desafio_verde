@@ -5,10 +5,10 @@ namespace App\Clients;
 
 use Illuminate\Support\Facades\Http;
 
-class SeenderClient
+class CourierClient
 {
 
-    public function send()
+    public function notifyEmail(): string
     {
         $response = Http::get('http://o4d9z.mocklab.io/notify');
         return $response->json('message');
