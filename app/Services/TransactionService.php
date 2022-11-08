@@ -4,8 +4,13 @@ namespace App\Services;
 
 use App\Clients\CourierClient;
 use App\Clients\TransactionClient;
+use App\Exceptions\WalletException;
+use App\Exceptions\InvalidPayerException;
+use App\Exceptions\InvalidTransactionException;
+use App\Exceptions\TimeoutEmailException;
 use App\Models\Transaction;
 use App\Models\Wallet;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 class TransactionService
@@ -19,48 +24,34 @@ class TransactionService
         $this->courier = $courier;
     }
 
-    public function enviandoDinheiroPraPessoa($data)
+    public function sendPayment($data): Transaction
     {
-        $payerWallet = Wallet::query()->find($data['payer_id']);
-        $payeeWallet = Wallet::query()->find($data['payee_id']);
+        return DB::transaction(function () use($data){
+            $payerWallet = Wallet::query()->find($data['payer_id']);
+            $payeeWallet = Wallet::query()->find($data['payee_id']);
 
-        try {
             if ($payerWallet->shopkeeper) {
-                throw new \Exception('Lojista não pode transferir!', Response::HTTP_UNPROCESSABLE_ENTITY);
+                throw InvalidPayerException::shopkeeperCanNotTransfer();
             }
-        } catch (\Exception $e) {
-            return $e->getMessage() . $e->getCode();
-        }
 
-        try {
             if ($payerWallet->balance < $data['amount']) {
-                throw new \Exception('Saldo insuficiente!', Response::HTTP_NOT_ACCEPTABLE);
+                throw WalletException::insufficientFunds();
             }
-        } catch (\Exception $e) {
-            return $e->getMessage() . $e->getCode();
-        }
 
-        try {
             if ($this->client->verify() != "Autorizado") {
-                throw new \Exception('Transação não autorizada!', Response::HTTP_UNAUTHORIZED);
+                throw InvalidTransactionException::unauthorizedTransaction();
             }
-        } catch (\Exception $e) {
-            return $e->getMessage() . $e->getCode();
-        }
 
-        Wallet::query()->find($data['payer_id'])
-            ->update(['balance' => $payerWallet->balance - $data['amount']]);
-        Wallet::query()->find($data['payee_id'])
-            ->update(['balance' => $payeeWallet->balance + $data['amount']]);
+            $payerWallet->update(['balance' => $payerWallet->balance - $data['amount']]);
+            $payeeWallet->update(['balance' => $payeeWallet->balance + $data['amount']]);
 
-        Transaction::create($data);
+            $transaction = Transaction::create($data);
 
-        try {
             if ($this->courier->notifyEmail() != "Success") {
-                throw new \Exception('Tempo limite expirado!', Response::HTTP_REQUEST_TIMEOUT);
+                throw TimeoutEmailException::providerTimeout();
             }
-        } catch (\Exception $e) {
-            return $e->getMessage() . $e->getCode();
-        }
+
+            return $transaction;
+        });
     }
 }

@@ -22,13 +22,14 @@ class TransactionControllerTest extends TestCase
             "amount" => 200,
             "payer_id" => $payer->wallet->id,
             "payee_id" => $payee->wallet->id,
+            "nome" => 'nadachi',
         ];
 
         // Act
         $response = $this->post(route('transaction.pay'), $body);
 
         // Assert
-        $response->assertOk();
+        $response->assertCreated();
         $this->assertDatabaseHas('transactions', $body);
         $this->assertDatabaseHas('wallets', [
             'id' => $payer->wallet->id,
@@ -44,7 +45,6 @@ class TransactionControllerTest extends TestCase
     public function testUmLojistaTentaTransferir()
     {
         // Assign
-        $this->markTestSkipped();
 
         $payer = Shopkeeper::factory()->has(Wallet::factory())->create();
         $payee = User::factory()->has(Wallet::factory())->create();
@@ -66,7 +66,6 @@ class TransactionControllerTest extends TestCase
 
     public function testUsuarioNãoTemSaldoSuficiente()
     {
-        $this->markTestSkipped();
         // Assign
         $payer = User::factory()->has(Wallet::factory())->create();
         $payee = User::factory()->has(Wallet::factory())->create();
