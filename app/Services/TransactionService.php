@@ -11,7 +11,6 @@ use App\Exceptions\TimeoutEmailException;
 use App\Models\Transaction;
 use App\Models\Wallet;
 use Illuminate\Support\Facades\DB;
-use Symfony\Component\HttpFoundation\Response;
 
 class TransactionService
 {

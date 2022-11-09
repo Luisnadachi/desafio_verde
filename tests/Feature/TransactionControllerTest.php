@@ -22,7 +22,6 @@ class TransactionControllerTest extends TestCase
             "amount" => 200,
             "payer_id" => $payer->wallet->id,
             "payee_id" => $payee->wallet->id,
-            "nome" => 'nadachi',
         ];
 
         // Act
@@ -67,7 +66,7 @@ class TransactionControllerTest extends TestCase
     public function testUsuarioNãoTemSaldoSuficiente()
     {
         // Assign
-        $payer = User::factory()->has(Wallet::factory())->create();
+        $payer = User::factory()->has(Wallet::factory(['balance' => 500]))->create();
         $payee = User::factory()->has(Wallet::factory())->create();
 
         $body = [
